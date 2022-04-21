@@ -1,17 +1,42 @@
 require 'nokogiri'
 require 'open-uri'
+require 'rspec'
 
 
-def get_cities_mail(url)
-    page = Nokogiri::HTML(open("https://www.annuaire-des-mairies.com/95/avernes.html"))
-    email_cities = []
-page.xpath('/html/body/div/main/section[2]/div/table/tbody/tr[4]/td[2]').each do |element|
-        email_cities << element.text
+# obtenir la liste des devises
+def scrapper_currency
+    page = Nokogiri::HTML(open("https://coinmarketcap.com/all/views/all/"))
+    currencies = []
+    page.xpath('//a[@class="cmc-table__column-name--symbol cmc-link"]').each do |element|
+        currencies << element.text
     end
-    return email_cities
+    return currencies
 end
 
-def get_city_url
-    page = Nokogiri::HTML(open("https://www.annuaire-des-mairies.com/95/avernes.html"))
-    url_cities = []
-end 
+# obtenir la liste des valeurs
+def scraper_value
+    page = Nokogiri::HTML(open("https://coinmarketcap.com/all/views/all/"))
+    values = []
+    page.xpath('//div[@class="sc-131di3y-0 cLgOOr"]').each do |element|
+        values << element.text.delete('$,').to_f
+    end
+    return values
+end
+
+#méthode d'affichage devise/valeur en petits hash
+def key_value(key, value)
+return {key => value}
+end
+
+# mettre les hash devise => valeur dans un array
+def scraper_crypto
+    currencies = scrapper_currency
+    values = scraper_value
+    crypto_array = []
+    currencies.each.with_index {|devise, position| crypto_array << key_value(devise, values[position])}
+    return crypto_array
+end
+
+puts  scrapper_currency
+
+
