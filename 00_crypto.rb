@@ -1,6 +1,9 @@
 require 'nokogiri'
 require 'open-uri'
+require 'rspec'
 
+
+# obtenir la liste des devises
 def scrapper_currency
     page = Nokogiri::HTML(open("https://coinmarketcap.com/all/views/all/"))
     currencies = []
@@ -10,6 +13,7 @@ def scrapper_currency
     return currencies
 end
 
+# obtenir la liste des valeurs
 def scraper_value
     page = Nokogiri::HTML(open("https://coinmarketcap.com/all/views/all/"))
     values = []
@@ -19,10 +23,12 @@ def scraper_value
     return values
 end
 
+#méthode d'affichage devise/valeur en petits hash
 def key_value(key, value)
 return {key => value}
 end
 
+# mettre les hash devise => valeur dans un array
 def scraper_crypto
     currencies = scrapper_currency
     values = scraper_value
@@ -31,11 +37,6 @@ def scraper_crypto
     return crypto_array
 end
 
-puts scraper_cry
+puts  scrapper_currency
 
 
-#for i in 0..19
-k=currency_symbols[i]
-v=currency_prices[i]
-crypto_symbols_and_prices << Hash[k,v]
-end
